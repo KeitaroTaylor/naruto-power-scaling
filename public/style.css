@@ -1,0 +1,82 @@
+*{
+    box-sizing: border-box;
+}
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+.clear {
+	clear: both;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+#body h1, #body h2, #body h3, #body h4, #body h5, #body h6{
+    font-size: 16px;
+    margin: 0%;
+    text-align: center;
+}
+
+
+
+header, footer {
+    height: 50px;
+    width: 100%;
+    background-color: orange;
+}
+header h3, header nav, header form, header > button{
+    width: 25%;
+    float: left;
+}
+
+
+
+h1 {
+    width: 100%;
+}
+main div {
+    width: 30%;
+    float: left;
+    padding: 0%, 15%;
+}
+main > span {
+    width: 10%;
+    float: left;
+    height: 100px;
+    text-align: center;
+}
+#signIn {
+    width: 100%;
+    text-align: center;
+}
+main img {
+  width: 100px;
+  height: 150px;
+}
+
+
+
+section > div{
+    width: 75%;
+    float: left;
+}
+.sideImage {
+    width: 25%;
+    float: left;
+}
+#relatedLinks {
+    width: 100%;
+}
+#relatedLinks img {
+    width: 33%;
+    float: left;
+    text-align: center;
+}

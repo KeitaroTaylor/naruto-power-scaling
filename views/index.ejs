@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <title>html</title>
+</head>
+<body id="body">
+    <header>
+        <h3 href="/">Naruto Power Scaling</h3>
+        <nav>
+            <a href="/rankings" class="btn">Rankings</a>
+            <a href="/forums" class="btn">Forums</a>
+            <a href="/news" class="btn">News</a>
+        </nav>
+        <form action="/search" method="GET">
+            <input type="text" placeholder="Search for...">
+            <button type="submit">Search</button>
+        </form>
+        <a href="/login"><button class="fa fa-user">Sign Up/Login</button></a>
+    </header>
+
+    <main class="clearfix">
+        <h1>Battle of the Day</h1>
+
+        <% let n1 = Math.floor(Math.random() * ninja.length) %>
+        <% let n2 = Math.floor(Math.random() * ninja.length) %>
+        <% while (n1 == n2) { %>
+            <% n2 = Math.floor(Math.random() * ninja.length) %>
+        <% } %>
+        <div>
+            <img src=<%= ninja[n1].img %> class="center">
+            <h3><%= ninja[n1].name %> at %</h3>
+        </div>
+        <span>Versus</span>
+        <div>
+            <img src=<%= ninja[n2].img %> class="center">
+            <h3><%= ninja[n2].name %> at %</h3>
+        </div>
+        <div>
+            <span>Popular comment 1</span>
+            <span>Popular comment 2</span>
+            <span>Popular comment 3</span>
+        </div>
+        <div id="signIn">
+            <a href="/signup">Sign up</a>
+            <span>to start scaling now!</span>
+        </div>
+    </main>
+
+    <section class="clearfix" id="midSection">
+        <div>
+            <h2>What is power scaling?</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos veritatis, quidem maiores nemo similique quam facere ea dicta sunt corrupti officia autem culpa nostrum sapiente perspiciatis et quae aspernatur. Vero.</p>
+        </div>
+        <div class="sideImage">
+            <img src="#" alt="">
+            <span>Caption</span>
+        </div>
+        <div id="relatedLinks">
+            <img src="#" alt="Link to creator1 like Swagkage's videos">
+            <img src="#" alt="Link to power scaling subreddit">
+            <img src="#" alt="Link to creator2 like SethTheProgrammer's videos">
+        </div>
+    </section>
+
+    <section class="clearfix" id="botSection">
+        <div class="sideImage">
+            <img src="#" alt="">
+            <span>Caption</span>
+        </div>
+        <div>
+            <h2>Recent News</h2>
+            <span>News article 1</span>
+            <span>News article 2</span>
+            <span>News article 3</span>
+        </div>
+    </section>
+
+    <footer>
+        <nav>
+            <button>Rankings</button>
+            <button>Forums</button>
+            <button>News</button>
+        </nav>
+    </footer>
+
+    <script type="text/javascript" src="main.js"></script>
+</body>
+</html>

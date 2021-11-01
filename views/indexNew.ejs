@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styleNew.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>NPS Home</title>
+</head>
+<body>
+    <div class="container mt-3">
+        <nav class="navbar navbar-light bg-light px-3 roundedEdges">
+            <div class="container-fluid">
+                <a href="/"><img src="img/nps-logo.png" alt=""></a>
+                <a href="/rankings"><button class="btn btn-outline-dark">Bingo Book</button></a>
+                <a href="/login"><button class="btn btn-outline-dark">Sign Up/Login</button></a>
+            </div>
+        </nav>
+
+        <main class="clearfix bg-light my-3 p-3 roundedEdges">
+            <h1 class="text-center naruto ">Battle of the Day</h1>
+
+        <% let n1 = Math.floor(Math.random() * ninja.length) %>
+        <% let n2 = Math.floor(Math.random() * ninja.length) %>
+        <% while (n1 == n2) { %>
+            <% n2 = Math.floor(Math.random() * ninja.length) %>
+        <% } %>
+            <div class="d-flex justify-content-center">
+                <div class="randomBattle d-flex justify-content-center card">
+                    <img class="card-img-top" src="<%= ninja[n1].img %>">
+                    <p class="card-body text-center"><%= ninja[n1].name %> at <%= ninja[n1].votes %> vote(s)</p>
+                    <span class="btn btn-outline-dark mb-3">VOTE!</span>
+                </div>
+                <span class="marginMiddle naruto">X</span>
+                <div class="randomBattle d-flex justify-content-center card">
+                    <img class="card-img-top" src="<%= ninja[n2].img %>">
+                    <p class="card-body text-center"><%= ninja[n2].name %> at <%= ninja[n2].votes %> vote(s)</p>
+                    <span class="btn btn-outline-dark mb-3">VOTE!</span>
+                </div>
+            </div>
+
+            <p class="text-center"><a href="/signup">Sign up</a> now to join the discussion!</p>
+
+            <p>Down here, a few comments on the battle will be displayed. Once logged in, you can view the whole discussion and take part. </p>
+
+        </main>
+
+        <section class="clearfix bg-light my-3 p-3 roundedEdges">
+            <p>Here will be an overview of what the site is for, and an intro to power scaling. Things like how the evidence is reviewed, what versions of characters are available, and supplemental material.
+            
+            Also noting that the rankings and profile pages will be built out further. Each user will have a personal ranking, can see their comments and posts, etc. Global rankings will also double as the "bingo book", a collection of each ninja and their feats.</p>
+        </section>
+    </div>
+</body>

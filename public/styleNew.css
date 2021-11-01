@@ -1,0 +1,42 @@
+*{
+    box-sizing: border-box;
+}
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+.clear {
+	clear: both;
+}
+
+body {
+    background-image: url("img/background.jpeg");
+}
+body .roundedEdges {
+    border-radius: 30px!important;
+    border: 3px solid orange!important;
+}
+@font-face {
+    font-family: naruto;
+    src: url(njnaruto.ttf);
+    font-weight: 100; 
+}
+.naruto {
+    font-family: naruto;
+}
+body .randomBattle {
+    width: 40%;
+    border: 3px solid orange;
+    margin: 3%;
+    float: left;
+    border-bottom-left-radius: 30px!important;
+    border-bottom-right-radius: 30px!important;
+}
+.marginMiddle {
+    margin-top: 115px;
+    font-size: 50px;
+}

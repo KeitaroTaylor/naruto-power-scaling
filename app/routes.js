@@ -8,7 +8,7 @@ module.exports = function(app, passport, db) {
     app.get('/', function(req, res) {
       db.collection('ninja').find().toArray((err, result) => {
           if (err) return console.log(err)
-          res.render('index.ejs', {
+          res.render('indexNew.ejs', {
             user : req.user,
             ninja: result
           })

@@ -12,7 +12,12 @@
 .clear {
 	clear: both;
 }
-
+.hidden {
+    visibility: hidden;
+}
+.none {
+    display: none;
+}
 body {
     background-image: url("img/background.jpeg");
 }

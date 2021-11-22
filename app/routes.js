@@ -1,30 +1,242 @@
 const user = require("./models/user");
 
-module.exports = function(app, passport, db) {
+module.exports = function(app, passport, db, ObjectId, multer) {
 
-// normal routes ===============================================================
+// ===============================================================
 
-    // show the home page (will also have our login links)
-    app.get('/', function(req, res) {
-      db.collection('ninja').find().toArray((err, result) => {
-          if (err) return console.log(err)
-          res.render('indexNew.ejs', {
-            user : req.user,
-            ninja: result
-          })
+// Image Upload Code ====================
+  var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/images/uploads')
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now() + ".png")
+    }
+  });
+  var upload = multer({storage: storage}); 
+
+// ========== GET ROUTES ==========
+
+  // index.ejs
+  app.get('/', function(req, res) {
+    db.collection('ninja').find().toArray((err, result) => {
+        if (err) return console.log(err)
+        res.render('indexNew.ejs', {
+          user : req.user,
+          ninja: result
         })
-    });
+      })
+  });
 
-    // PROFILE SECTION =========================
+  // profile.ejs
     app.get('/profile', isLoggedIn, function(req, res) {
-        db.collection('contacts').find().toArray((err, result) => {
+        db.collection('ninja').find().toArray((err, ninja) => {
           if (err) return console.log(err)
-          res.render('profile.ejs', {
-            user : req.user,
-            contacts: result
+          db.collection('comments').find().toArray((err, comments) => {
+            if (err) return console.log(err)
+            db.collection('users').find().toArray((err, users) => {
+              if (err) return console.log(err)
+              db.collection('battles').find().toArray((err, battles) => {
+                if (err) return console.log(err)
+                res.render('profile.ejs', {
+                  user : req.user,
+                  ninja: ninja,
+                  comments: comments,
+                  battles: battles,
+                  users: users
+                })
+              })
+            })
           })
         })
     });
+    app.get('/battle', isLoggedIn, function(req, res) {
+        let array = [req.query.ninjaOne, req.query.ninjaTwo]
+        array.sort()
+        db.collection('ninja').find().toArray((err, ninja) => {
+          if (err) return console.log(err)
+          db.collection('users').find().toArray((err, comments) => {
+            if (err) return console.log(err)
+            db.collection('battles').find({n1: array[0], n2: array[1]}).toArray((err, battles) => {
+              if (err) return console.log(err)
+              db.collection('comments').find({battleId: battles[0]._id}).toArray((err, users) => {
+                if (err) return console.log(err)
+                res.render('profile.ejs', {
+                  user : req.user,
+                  ninja: ninja,
+                  comments: comments,
+                  battles: battles,
+                  users: users
+                })
+              })
+            })
+          })
+        })
+    });
+
+  // rankings.ejs
+    app.get('/rankings', isLoggedIn, function(req, res) {
+    db.collection('ninja').find().toArray((err, result) => {
+        if (err) return console.log(err)
+        res.render('rankings.ejs', {
+          user : req.user,
+          ninja: result
+        })
+      })
+    });
+
+  // databook.ejs
+    app.get('/data/:id', isLoggedIn, function(req, res) {
+    let id = ObjectId(req.params.id)
+    db.collection('ninja').find({_id: id}).toArray((err, ninja) => {
+        if (err) return console.log(err)
+        db.collection('data').find({ninjaId: id}).toArray((err, data) => {
+          if (err) return console.log(err)
+          res.render('databook.ejs', {
+            user : req.user,
+            ninja: ninja,
+            data: data
+          })
+        })
+      })
+    });
+
+
+
+// ========== POST ROUTES ==========
+
+  // comments collection
+  app.post('/comment', (req, res) => {
+    let user = ObjectId(req.user._id)
+    let battle = ObjectId(req.body.battle)
+      db.collection('comments').save({
+      comment: req.body.comment,
+      userId: user,
+      battleId: battle
+      }, (err, result) => {
+        if (err) return console.log(err)
+        console.log('saved to database')
+        res.redirect('/profile')
+      })
+    })
+
+  // data submission (images)
+  app.post('/submitData', upload.single('file-to-upload'), (req, res) => {
+    let ninjaId = ObjectId(req.body.ninjaId)
+    db.collection('data').save({
+    caption: req.body.caption,
+    ninjaId: ninjaId,
+    img: 'images/uploads/' + req.file.filename 
+    }, (err, result) => {
+      if (err) return console.log(err)
+      console.log('saved to database')
+      res.redirect(`/data/${req.body.ninjaId}`)
+    })
+  })
+
+
+
+// ========== PUT ROUTES ==========
+
+  // vote for winner of battle
+  app.put('/battles', (req, res) => {
+      
+      db.collection('battles')
+      .findOneAndUpdate({
+      n1: req.body.n1, 
+      n2: req.body.n2
+      }, {
+        $set: {
+          n1votes: req.body.n1votes,
+          n2votes: req.body.n2votes
+        }
+      }, {
+        sort: {_id: -1},
+        upsert: false
+      }, (err, result) => {
+        if (err) return res.send(err)
+        res.send(result)
+      })
+    })
+
+  // update battlesWon for ninjas
+  app.put('/updateWins', (req, res) => {
+    let countWon = 0
+    let lossesWon = 0
+    let winsWon
+      db.collection('battles').find().toArray((err, battles) => {
+        if (err) return console.log(err)
+      for (i=0; i<battles.length; i++) {
+        if (battles[i].n1 == req.body.ninjaWon) {
+          countWon++
+          if (battles[i].n1votes <= battles[i].n2votes) {
+            lossesWon++
+          }
+        } else if (battles[i].n2 == req.body.ninjaWon) {
+          countWon++
+          if (battles[i].n2votes <= battles[i].n1votes) {
+            lossesWon++
+          }
+        }
+      }
+      winsWon = countWon - lossesWon
+      console.log('win', winsWon, req.body.ninjaWon)
+    db.collection('ninja')
+      .findOneAndUpdate({
+      name: req.body.ninjaWon
+      }, {
+        $set: {
+          battlesWon: winsWon
+        }
+      }, {
+        sort: {_id: -1},
+        upsert: false
+      }, (err, result) => {
+        if (err) return res.send(err)
+        res.send(result)
+      })
+    })
+  })
+
+  app.put('/updateLoss', (req, res) => {
+    let countLoss = 0
+    let lossesLoss = 0
+    let winsLoss
+      db.collection('battles').find().toArray((err, battles) => {
+        if (err) return console.log(err)
+      for (i=0; i<battles.length; i++) {
+        if (battles[i].n1 == req.body.ninjaLost) {
+          countLoss++
+          if (battles[i].n1votes <= battles[i].n2votes) {
+            lossesLoss++
+          }
+        } else if (battles[i].n2 == req.body.ninjaLost) {
+          countLoss++
+          if (battles[i].n2votes <= battles[i].n1votes) {
+            lossesLoss++
+          }
+        }
+      }
+      winsLoss = countLoss - lossesLoss
+      console.log('loss', winsLoss, req.body.ninjaLost)
+    db.collection('ninja')
+      .findOneAndUpdate({
+      name: req.body.ninjaLost
+      }, {
+        $set: {
+          battlesWon: winsLoss
+        }
+      }, {
+        sort: {_id: -1},
+        upsert: false
+      }, (err, result) => {
+        if (err) return res.send(err)
+        res.send(result)
+      })
+    })
+  })
+
+
 
     // LOGOUT ==============================
     app.get('/logout', function(req, res) {
@@ -148,5 +360,5 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
         return next();
 
-    res.redirect('/');
+    res.redirect('/login');
 }

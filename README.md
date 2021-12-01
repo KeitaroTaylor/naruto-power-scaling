@@ -1,2 +1,2 @@
 # naruto-power-scaling
-demo day project
+Demo day rough draft. No longer in use.
